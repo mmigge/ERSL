@@ -55,9 +55,11 @@ api.logout()
 # Start downloading
 ee = EarthExplorer("remoteSensingErsl", "ErslRemoteSensing00")
 
+current_directory = os.getcwd()
+
 # Creating the "images" directory
-if not os.path.isdir('./images'):
-    os.mkdir('./images')
+if not os.path.isdir(current_directory + '/images'):
+    os.mkdir(current_directory + '/images')
 else:
     print("Directory 'images' already exists")
 
@@ -65,12 +67,12 @@ for scene in selected_scenes:
     year = scene['acquisitionDate'][:4]
     scene_id = scene['entityId']
     display_id = scene['displayId']
-    if not os.path.isdir('./images/' + year):
-        os.mkdir('./images/' + year)
+    if not os.path.isdir(current_directory + '/images/' + year):
+        os.mkdir(current_directory + '/images/' + year)
     else:
         print("Directory for " + year + " already exists")
-    if not os.path.isfile('./images/' + year + '/' + display_id + '.tar.gz'):
-        ee.download(scene_id=scene_id, output_dir='./images/' + year)
+    if not os.path.isfile(current_directory + '/images/' + year + '/' + display_id + '.tar.gz'):
+        ee.download(scene_id=scene_id, output_dir=current_directory + '/images/' + year)
     else:
         print("File " + display_id + " already exists")
 

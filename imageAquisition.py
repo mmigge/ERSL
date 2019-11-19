@@ -1,3 +1,4 @@
+import os
 from datetime import date, datetime
 import landsatxplore.api
 from landsatxplore.earthexplorer import EarthExplorer
@@ -54,9 +55,23 @@ api.logout()
 # Start downloading
 ee = EarthExplorer("remoteSensingErsl", "ErslRemoteSensing00")
 
+# Creating the "images" directory
+if not os.path.isdir('./images'):
+    os.mkdir('./images')
+else:
+    print("Directory 'images' already exists")
+
 for scene in selected_scenes:
     year = scene['acquisitionDate'][:4]
     scene_id = scene['entityId']
-    ee.download(scene_id=scene_id, output_dir='/home/niklas/Uni/02_03_thirdMaster/remoteSensing/images/' + year)
+    display_id = scene['displayId']
+    if not os.path.isdir('./images/' + year):
+        os.mkdir('./images/' + year)
+    else:
+        print("Directory for " + year + " already exists")
+    if not os.path.isfile('./images/' + year + '/' + display_id + '.tar.gz'):
+        ee.download(scene_id=scene_id, output_dir='./images/' + year)
+    else:
+        print("File " + display_id + " already exists")
 
 ee.logout()

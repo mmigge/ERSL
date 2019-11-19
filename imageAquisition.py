@@ -72,7 +72,11 @@ for scene in selected_scenes:
     else:
         print("Directory for " + year + " already exists")
     if not os.path.isfile(current_directory + '/images/' + year + '/' + display_id + '.tar.gz'):
-        ee.download(scene_id=scene_id, output_dir=current_directory + '/images/' + year)
+        try:
+            ee.download(scene_id=scene_id, output_dir=current_directory + '/images/' + year)
+        except Exception as err:
+            print("An Error has occurred:")
+            print(err)
     else:
         print("File " + display_id + " already exists")
 

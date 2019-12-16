@@ -1,5 +1,6 @@
 import os
 from datetime import date, datetime
+import tarfile
 import landsatxplore.api
 from landsatxplore.earthexplorer import EarthExplorer
 
@@ -75,3 +76,12 @@ for scene in selected_scenes:
         print("File " + display_id + " already exists")
 
 ee.logout()
+
+# Extracting images
+images = current_directory + '/images/'
+for subdir, dirs, files in os.walk(images):
+    for file in files:
+        with tarfile.open(subdir + '/' + file, 'r:gz') as tar:
+            substring_index = file.find('.')
+            extract_dir = subdir + '/' + file[:substring_index]
+            tar.extractall(extract_dir)

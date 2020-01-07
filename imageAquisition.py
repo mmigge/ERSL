@@ -28,8 +28,8 @@ scenes = api.search(
     max_results=1000)
 
 today = date.today()
-datemin = datetime.strptime("05-15", "%m-%d").date().replace(year=today.year)
-datemax = datetime.strptime("08-15", "%m-%d").date().replace(year=today.year)
+datemin = datetime.strptime("05-01", "%m-%d").date().replace(year=today.year)
+datemax = datetime.strptime("08-31", "%m-%d").date().replace(year=today.year)
 selected_scenes = []
 
 combined_scenes = scenes_early + scenes
@@ -80,3 +80,4 @@ for subdir, dirs, files in os.walk(images):
                 substring_index = file.find('.')
                 extract_dir = subdir + '/' + file[:substring_index]
                 tar.extractall(extract_dir)
+

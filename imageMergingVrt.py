@@ -17,11 +17,12 @@ def minimum(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize,
     
     temp_tup = ()
     for array in in_ar:
-        array = array.astype(float)
-        array[array==0]=['nan']
+        array = array.astype(int)
+        array[array == 0] = 3000
         temp_tup += (array,)
         
-    out_ar = np.round_(np.clip(np.nanmin(temp_tup, axis = 0, keepdims = True),0,255))
+    np.amin(temp_tup, axis = 0, out = out_ar)
+    out_ar[out_ar == 3000] = 0
     
 ]]>
     </PixelFunctionCode>

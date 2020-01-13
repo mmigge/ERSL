@@ -4,10 +4,12 @@ import tarfile
 import traceback
 import landsatxplore.api
 from landsatxplore.earthexplorer import EarthExplorer
+from tqdm import tqdm
 
 # Initialize a new API instance and get an access key
 api = landsatxplore.api.API("remoteSensingErsl", "ErslRemoteSensing00")
 
+print("Searching for scenes")
 # Request
 # Images before 1984
 scenes_early = api.search(
@@ -55,7 +57,8 @@ current_directory = os.getcwd()
 if not os.path.isdir(current_directory + '/images'):
     os.mkdir(current_directory + '/images')
 
-for scene in selected_scenes:
+print("Downloading selected scenes")
+for scene in tqdm(selected_scenes):
     year = scene['acquisitionDate'][:4]
     scene_id = scene['entityId']
     display_id = scene['displayId']
@@ -71,9 +74,10 @@ for scene in selected_scenes:
 
 ee.logout()
 
+print("Extracting images")
 # Extracting images
 images = current_directory + '/images/'
-for subdir, dirs, files in os.walk(images):
+for subdir, dirs, files in tqdm(os.walk(images)):
     for file in files:
         if file.endswith('tar.gz'):
             with tarfile.open(subdir + '/' + file, 'r:gz') as tar:

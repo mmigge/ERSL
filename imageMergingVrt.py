@@ -21,7 +21,7 @@ def minimum(in_ar, out_ar, xoff, yoff, xsize, ysize, raster_xsize,
         array[array == 0] = 3000
         temp_tup += (array,)
         
-    np.amin(temp_tup, axis = 0, out = out_ar)
+    np.clip(np.amin(temp_tup, axis = 0), 0, 255, out = out_ar)
     out_ar[out_ar == 3000] = 0
     
 ]]>

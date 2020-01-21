@@ -80,7 +80,7 @@ ee.logout()
 
 print("Extracting images")
 # Extracting images
-for subdir, dirs, files in tqdm(os.walk(images_dir)):
+for subdir, dirs, files in os.walk(images_dir):
     for file in files:
         if file.endswith('tar.gz'):
             try: 

@@ -51,22 +51,26 @@ api.logout()
 # Start downloading
 ee = EarthExplorer("remoteSensingErsl", "ErslRemoteSensing00")
 
-current_directory = os.getcwd()
-
 # Creating the "images" directory
-if not os.path.isdir(current_directory + '/images'):
-    os.mkdir(current_directory + '/images')
+images_dir = os.path.join(os.getcwd(), 'images')
+if not os.path.isdir(images_dir):
+    os.mkdir(images_dir)
 
+# Downloading scenes
 print("Downloading selected scenes")
 for scene in tqdm(selected_scenes):
     year = scene['acquisitionDate'][:4]
     scene_id = scene['entityId']
     display_id = scene['displayId']
-    if not os.path.isdir(current_directory + '/images/' + year):
-        os.mkdir(current_directory + '/images/' + year)
-    if not os.path.isfile(current_directory + '/images/' + year + '/' + display_id + '.tar.gz'):
+
+    pathdir = os.path.join(images_dir, year)
+    if not os.path.isdir(pathdir):
+        os.mkdir(pathdir)
+
+    # Downloading scenes, if not already downloaded
+    if not os.path.isfile(os.path.join(pathdir, display_id + '.tar.gz')):
         try:
-            ee.download(scene_id=scene_id, output_dir=current_directory + '/images/' + year)
+            ee.download(scene_id=scene_id, output_dir=pathdir)
         except Exception:
             traceback.print_exc()
     else:
@@ -76,12 +80,11 @@ ee.logout()
 
 print("Extracting images")
 # Extracting images
-images = current_directory + '/images/'
-for subdir, dirs, files in tqdm(os.walk(images)):
+for subdir, dirs, files in tqdm(os.walk(images_dir)):
     for file in files:
         if file.endswith('tar.gz'):
-            with tarfile.open(subdir + '/' + file, 'r:gz') as tar:
+            with tarfile.open(subdir + os.sep + file, 'r:gz') as tar:
                 substring_index = file.find('.')
-                extract_dir = subdir + '/' + file[:substring_index]
+                extract_dir = subdir + os.sep + file[:substring_index]
                 tar.extractall(extract_dir)
 

@@ -76,7 +76,10 @@ for direc in subdirs:
 
     for files in os.listdir(img_path):
         if files.endswith('vrt'):
-            f = open(img_path + files, "r")
+
+            curr_file = os.path.join(img_path, files)
+
+            f = open(curr_file, "r")
             contents = f.readlines()
             f.close()
 
@@ -84,13 +87,16 @@ for direc in subdirs:
             contents[index - 1] = '<VRTRasterBand dataType="Byte" band="1" subClass="VRTDerivedRasterBand">'
             contents.insert(index, pixel_function)
 
-            f = open(img_path + files, "w")
+
+            f = open(curr_file, "w")
             contents = "".join(contents)
             f.write(contents)
             f.close()
 
-            translate_command = ['gdal_translate', '--config', 'GDAL_VRT_ENABLE_PYTHON', 'YES', img_path + files,
-                                   img_path + 'min_merged_B' + files[-5: -4] + '.tif']
+            output_file = os.path.join(img_path, 'min_merged_B' + files[-5: -4] + '.tif')
+            
+            translate_command = ['gdal_translate', '--config', 'GDAL_VRT_ENABLE_PYTHON', 'YES', curr_file, output_file]
+
 
             ps = subprocess.Popen(
                 translate_command,

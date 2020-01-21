@@ -83,8 +83,13 @@ print("Extracting images")
 for subdir, dirs, files in tqdm(os.walk(images_dir)):
     for file in files:
         if file.endswith('tar.gz'):
-            with tarfile.open(subdir + os.sep + file, 'r:gz') as tar:
-                substring_index = file.find('.')
-                extract_dir = subdir + os.sep + file[:substring_index]
-                tar.extractall(extract_dir)
+            try: 
+                with tarfile.open(subdir + os.sep + file, 'r:gz') as tar:
+                    substring_index = file.find('.')
+                    extract_dir = subdir + os.sep + file[:substring_index]
+                    tar.extractall(extract_dir)
+            except Exception:
+                print(file)
+                traceback.print_exc()
+
 

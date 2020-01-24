@@ -35,7 +35,7 @@ To start with, let's load the Sentinel data as well as a shapefile of the traini
 
 ```{r load}
 #library(satellite)
-path <- "/home/b_kar02/UNI/ERSL/Geostat2018/practice/data/MOSAIKE/92"
+path <- "/home/b_kar02/UNI/ERSL/ERSL/Geostat2018/practice/data/1990/clipped"
 path
 files <- list.files(path, full.names = TRUE)
 files
@@ -43,7 +43,7 @@ files
 #sat
 sentinel <- stack(files)
 #sentinel <- stack("data/sentinel2017.grd")
-training <- read_sf("data/train2.shp")
+training <- read_sf("data/1990/train90/train.shp")
 ```
 
 First get an overview on the data. As satellite data, a Sentinel-2 scene from october 2017 is used. Sentinel has a spatial resolution of 10-20m and has spectral channels in the visible, near infrared as well as shortwave infrared. The Sentinel data subset for this tutorial contains the Sentinel channels 2-8 (visible and near infrared channels) as well as the NDVI and a yellowness index that was calculated as (red+green-blue)/(red+green+blue) as additional bands. We assume the yellowness index is valuable to distinguish the striking yellow color of the gorse from other vegetation.
@@ -79,7 +79,7 @@ In order to keep data for a later (nearly) independent validation as well as to 
 
 ```{r split}
 set.seed(100)
-trainids <- createDataPartition(extr$Class,list=FALSE,p=0.3)
+trainids <- createDataPartition(extr$type,list=FALSE,p=0.3)
 trainDat <- extr[trainids,]
 testDat <- extr[-trainids,]
 ```
@@ -89,14 +89,14 @@ testDat <- extr[-trainids,]
 To get an idea about the relationships between the spectral Sentinel data and the land cover class, we see how the yellowness index differs according to the land cover class. 
 
 ```{r featurePlot}
-boxplot(trainDat$B002n~trainDat$Class,las=2)
+boxplot(trainDat$clip1~trainDat$type,las=2)
 ```
 
 We can also get an impression about the separability of the classes we create a feature plot that visualizes the location of the training samples in a scatter plot of two Sentinel channels. 
 
 ```{r featurePlot2}
-featurePlot(x = trainDat[, c("B003n","B004n","B006n","B007n")], 
-            y = factor(trainDat$Class), 
+featurePlot(x = trainDat[, c("clip2","clip3","clip4", "clip5")], 
+            y = factor(trainDat$type), 
             plot = "pairs",
             auto.key = list(columns = 4))
 ```
@@ -110,9 +110,9 @@ As expected, gorse features the highest "yellowness" values while all other land
 For model training we then need to define the predictor and response variables. As predictors we can use basically all information from the Sentinel raster stack as we can assume they are all meaningful in differentiation between the land cover classes. As response variable we use the "Class" column of the data frame.
 
 ```{r vars}
-predictors <- c("B001n","B002n","B003n","B004n","B005n","B006n",
-                "B007n")
-response <- "Class"
+predictors <- c("clip1","clip2","clip3","clip4","clip5","clip6",
+                "clip7")
+response <- "type"
 ```
 
 ### Random forest model training

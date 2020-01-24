@@ -149,7 +149,7 @@ plot(varImp(model))
 Finally we want to use the model for making spatial predictions, hence for classifying the entire Sentinel scene. Therefore the model is applied on the full raster stack using the predict function from the raster package.
 
 ```{r predict}
-prediction <- predict(sentinel,model)
+  prediction <- predict(sentinel,model)
 ```
 
 Now we can create a map with meaningful colors of the predicted land cover.
@@ -165,7 +165,7 @@ After classification we still want to get an impression about the performance of
 
 ```{r valid}
 pred_valid <- predict(model,testDat)
-table(testDat$Class,pred_valid)
+table(testDat$type,pred_valid)
 ```
 
 ## Final note
